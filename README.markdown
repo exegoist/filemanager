@@ -11,23 +11,21 @@ Works with django >= 1.8
 
 2. add `filemanager` to tuple of installed apps in settings.py:
 
-```
-INSTALLED_APPS = (
-    ...
-    'django.contrib.staticfiles',
-    'filemanager',
-    )
-```
+        INSTALLED_APPS = (
+            ...
+            'django.contrib.staticfiles',
+            'filemanager',
+        )
 
 3. add MEDIA_ROOT in settings.py (directory, in which files will be stored), for example:
 
-``` 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-```
+        MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 4. add urlresolver into your project urls.py:
 
-```
-    url('r^', include('filemanager.urls')),
-```
-5. make migrations and start server.
+        url('r^', include('filemanager.urls')),
+
+5. download and unzip foundation css-framework files to static folder inside filemanager project (or directory for static files if you have such one configured)
+
+### Make migrations and start server.
+
