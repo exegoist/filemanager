@@ -1,7 +1,6 @@
 # coding: utf-8
 # import from python
 import os
-import operator
 # import from django
 from django.utils import timezone
 from django.shortcuts import render_to_response, get_object_or_404
@@ -44,16 +43,16 @@ def list_universal(request, path, year, month):
     request.session.set_expiry(3600)
     return render_to_response('list.html', {'files_list': files_list, 'form': form, 'year_urls': y_urls, 'month_urls': m_urls, 'year': year, 'mname': mnames[int(month)-1] }, context_instance=RequestContext(request))
 
-#@login_required
+@login_required
 def list_by_date(request, year, month):
     path = year + '/' + month + '/'
     return list_universal(request, path, year, month)
 
-#@login_required
+@login_required
 def list_by_path(request, path):
     return list_universal(request, path + '/', timezone.now().strftime('%Y'), timezone.now().strftime('%m'))
 
-#@login_required
+@login_required
 def list_current(request):
     return list_by_path(request, timezone.now().strftime('%Y') + '/' + timezone.now().strftime('%m'))
 
