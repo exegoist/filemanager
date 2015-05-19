@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Авторизація{% endblock title %}
+{% block content %}
+<h1>Введіть користувача та пароль:</h1>
+<div class="panel">
+{% if form.errors %}
+<p>Логін і пароль набрані не вірно</p>
+{% endif %}
+<form method="post" action="{% url 'django.contrib.auth.views.login' %}">
+    {% csrf_token %}
+    <table>
+    <tbody>
+     <tr>
+        <td>{{ form.username.label_tag }}</td>
+        <td>{{ form.username }}</td>
+     </tr>
+     <tr>
+        <td>{{ form.password.label_tag }}</td>
+        <td>{{ form.password }}</td>
+     </tr>
+    </tbody>
+    </table>
+    <input class="button radius" type="submit" value="Увійти" />
+    <input type="hidden" name="next" value="{{ next }}" />
+</form>
+{% load staticfiles %}
+<img src="{% static "login.jpg" %}" alt="Smiley face" >
+</div>
+{% endblock content %}

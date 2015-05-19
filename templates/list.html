@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}{{ year }} | {{ mname }}{% endblock title %}
+{% block calendar %}
+<h4>ВИБЕРІТЬ РІК:</h4>
+    <nav class="top-bar">
+        <section class="top-bar-section">
+        <ul class="left">
+            {% for year_url in year_urls %}
+            <li class={% if year_url.2 %}"active"{% endif %}><a href="/{{ year_url.0 }}">{{ year_url.1 }}</a></li>
+            {% endfor %}
+        </ul>
+        </endsection>
+    </nav>
+<h4>ВИБЕРІТЬ МІСЯЦЬ:</h4>
+    <nav class="top-bar">
+        <section class="top-bar-section">
+        <ul class="left">
+            {% for month_url in month_urls %}
+            <li class={% if month_url.2 %}"active"{% endif %}><a href="/{{ month_url.0 }}">{{ month_url.1 }}</a></li>
+            {% endfor %}
+        </ul>
+        </endsection>
+    </nav>
+{% endblock calendar %}
+{% block content %}
+<form action="{{ request.path }}" method="post" enctype="multipart/form-data">
+<div class="raw">
+    <div class="large-12 panel">
+    {% csrf_token %}
+    {{ form.non_field_errors }}{{ form.file_object.label_tag }}{{ form.file_object.help_text }}{{ form.file_object.errors }}{{ form.file_object }}
+    <input class="button radius" type="submit" value="Завантажити" />
+    </div>
+</div>
+</form>
+<table width="100%">
+    <tbody>
+       <tr>
+          <th width="60%">НАЗВА ФАЙЛУ</th>
+          <th width="20%">РОЗМІР</th>
+          <th width="20%">ВИДАЛИТИ</th>
+       </tr>
+ {% if files_list %}
+       {% for file in files_list %}
+       <tr>
+           <td><a href="/{{ file.url }}">{{ file.name }}</a></td>
+           <td>{{ file.size }}</td>
+           <td><a href="/{{ file.delete_url }}" class="button alert tiny radius">ВИДАЛИТИ</a></td>
+       </tr>
+       {% endfor %}
+ {% endif %}
+    </tbody>
+</table>
+{% endblock content %}

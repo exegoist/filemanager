@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock title %}</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static "css/foundation.css" %}" charset="utf-8">
+</head>
+<body>
+<nav class="top-bar" data-topbar role="navigation">
+    <ul class="title-area">
+        <li class="name">
+              <h1><a href="/">ПОТОЧНИЙ МІСЯЦЬ</a></h1>
+        </li>
+    </ul>
+    <section class="top-bar-section">
+    <ul class="right">
+              <li><a href="/scan/">ПРОСКАНУВАТИ</a></li>
+    </ul>
+    </endsection>
+    <section class="top-bar-section">
+    <ul class="right">
+              <li><a href="/Video_SMI">Video_SMI</a></li>
+    </ul>
+    </endsection>
+</nav>
+<div class="raw">
+    <div class="large-9 medium-12 large-centered columns">
+        {% block calendar %}{% endblock calendar %}
+        {% block content %}{% endblock content %}
+    </div>
+</div>
+<script src="{% static "js/vendor/jquery.js" %}"></script>
+<script src="{% static "js/foundation.min.js" %}"></script>
+ <script>
+   $(document).foundation();
+ </script>
+</body>
+</html>
