@@ -57,11 +57,11 @@ def list_current(request):
     return list_by_path(request, timezone.now().strftime('%Y') + '/' + timezone.now().strftime('%m'))
 
 def scan_for_files(request):
-    curr_dir = 'media/video'
+    curr_dir = '/media/video'
     for root, dirs, files in os.walk(curr_dir, topdown=True):
         for name in files:
-            if len(File.objects.filter(Q(file_object__icontains = name), file_path = root[12:] + '/')) == 0:
-                instance = File(file_object = os.path.join(root[6:], name), file_path = root[12:] + '/')
+            if len(File.objects.filter(Q(file_object__icontains = name), file_path = root[13:] + '/')) == 0:
+                instance = File(file_object = os.path.join(root[7:], name), file_path = root[13:] + '/')
                 instance.save()
     return HttpResponseRedirect('/')
 

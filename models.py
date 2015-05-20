@@ -10,7 +10,7 @@ class File(models.Model):
         ordering = ['-pk']
 
     file_object = models.FileField(upload_to=lambda instance, filename: 'video/' + instance.file_path + filename)
-    file_path   = models.CharField(max_length=9)
+    file_path   = models.CharField(max_length=30)
     def __unicode__(self):
         return self.file_object.name[self.file_object.name.rfind('/')+1:]
 
