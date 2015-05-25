@@ -44,7 +44,7 @@ def list_universal(request, path, year, month):
     return render_to_response('list.html', {'files_list': files_list, 'form': form, 'year_urls': y_urls, 'month_urls': m_urls, 'year': year, 'mname': mnames[int(month)-1] }, context_instance=RequestContext(request))
 
 @login_required
-def list_by_date(request, year, month):
+def list_by_date(request, year=timezone.now().strftime('%Y'), month=timezone.now().strftime('%m')):
     path = year + '/' + month + '/'
     return list_universal(request, path, year, month)
 
@@ -65,6 +65,7 @@ def scan_for_files(request):
                 instance.save()
     return HttpResponseRedirect('/')
 
+@login_required
 def delete_file(request,id):
     instance = get_object_or_404(File, pk=id)
     instance.delete()
