@@ -2,4 +2,4 @@
 from django import forms
 
 class FileForm(forms.Form):
-    file_object = forms.FileField(label='Виберіть файл')
+    file = forms.FileField(label='Виберіть файл')

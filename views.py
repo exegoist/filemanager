@@ -1,5 +1,5 @@
-# coding: utf-8
-# import from python
+# -*- coding: utf-8 -*-
+""" view that handle files adding, listing, removing  """
 import os
 # import from django
 from django.utils import timezone
@@ -12,56 +12,85 @@ from django.db.models import Q
 from .models import File
 from .forms import FileForm
 
-mnames = "Січень Лютий Березень Квітень Травень Червень Липень Серпень Вересень Жовтень Листопад Грудень"
-mnames = mnames.split()
+MONTHS = {'01':'Січень',
+          '02':'Лютий',
+          '03':'Березень',
+          '04':'Квітень',
+          '05':'Травень',
+          '06':'Червень',
+          '07':'Липень',
+          '08':'Серпень',
+          '09':'Вересень',
+          '10':'Жовтень',
+          '11':'Листопад',
+          '12':'Грудень'}
+
 
 def year_urls(year, month):
-    return [(str(iyear) + '/' + month + '/', str(iyear), int(iyear) == int(year)) for iyear in range(int(year)-1, int(year)+2)]
+    "function generating list of urls for years back and forward"
+    return [(str(iyear) + '/' + month + '/', str(iyear), int(iyear) == int(year))
+            for iyear in range(int(year)-1, int(year)+2)]
 
 def month_urls(year, month):
-    return [(str(year) + '/' + str(n+1).zfill(2) + '/', mname, n + 1 == int(month)) for n, mname in enumerate(mnames)]
+    "function generating list of urls for month in current year"
+    return [(year + '/' + month_order + '/', MONTHS[month_order], month_order == month)
+            for n, month_order in list(enumerate(MONTHS))]
 
 def list_universal(request, path, year, month):
+    "function rendering list of uploaded files by path or year/month"
     if request.method == 'POST':
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
-            instance = File(file_object = request.FILES['file_object'], file_path = path)
+            instance = File(file=request.FILES['file'], file_path=path)
             instance.save()
             return HttpResponseRedirect('/' + path)
     else:
         form = FileForm()
     files = File.objects.filter(file_path=path)
     files_list = []
-    for file in files:
-        furl = file.file_object.url
-        fname = file.file_object.name[file.file_object.name.rfind('/')+1:]
-        fsize = str(int(file.file_object.size/1048576)) + ' Mb'
-        delete_url = 'delete/' + str(file.id)
-        files_list.append({'url':furl, 'name':fname, 'size':fsize, 'delete_url':delete_url})
-    y_urls = year_urls(year,month)
-    m_urls = month_urls(year,month)
+    for f in files:
+        url = f.file.url
+        name = f.file_name
+        size = f.file.size
+        delete_url = 'delete/' + str(f.id)
+        files_list.append({'url':url, 'name':name, 'size':size, 'delete_url':delete_url})
+    y_urls = year_urls(year, month)
+    m_urls = month_urls(year, month)
     request.session.set_expiry(3600)
-    return render_to_response('list.html', {'files_list': files_list, 'form': form, 'year_urls': y_urls, 'month_urls': m_urls, 'year': year, 'mname': mnames[int(month)-1] }, context_instance=RequestContext(request))
+    return render_to_response('list.html',
+                              {'files_list': files_list, 'form': form, 'year_urls': y_urls,
+                               'month_urls': m_urls, 'year': year, 'mname': MONTHS[month]},
+                              context_instance=RequestContext(request))
 
 @login_required
-def list_by_date(request, year=timezone.now().strftime('%Y'), month=timezone.now().strftime('%m')):
-    path = year + '/' + month + '/'
+def list_by_date(request, year=timezone.now().strftime('%Y'),
+                 month=timezone.now().strftime('%m')):
+    "gimme date i'l give you path"
+    path = '{}/{}'.format(year,month)
     return list_universal(request, path, year, month)
 
 @login_required
 def list_by_path(request, path):
-    return list_universal(request, path + '/', timezone.now().strftime('%Y'), timezone.now().strftime('%m'))
+    "gimme path and go universal"
+    return list_universal(request, path, timezone.now().strftime('%Y'),
+                          timezone.now().strftime('%m'))
 
 @login_required
 def list_current(request):
-    return list_by_path(request, timezone.now().strftime('%Y') + '/' + timezone.now().strftime('%m'))
+    "list by current month"
+    return list_by_path(request, '{}/{}'.format(timezone.now().strftime('%Y'),
+                        timezone.now().strftime('%m')))
 
 def scan_for_files(request):
-    curr_dir = '/media/video'
-    for root, dirs, files in os.walk(curr_dir, topdown=True):
-        for name in files:
-            if len(File.objects.filter(Q(file_object__icontains = name), file_path = root[13:] + '/')) == 0:
-                instance = File(file_object = os.path.join(root[7:], name), file_path = root[13:] + '/')
+    "scan directory for files and populate db with founded files"
+    media_dir = '/home/al/.virtualenvs/pydio/pydio/media'
+    video_dir = '/home/al/.virtualenvs/pydio/pydio/media/video'
+    for root, dirs, files in os.walk(video_dir, topdown=True):
+        for f in files:
+            if not File.objects.filter(file_name=f):
+                instance = File(file=os.path.join(root.replace(media_dir, ""), f)[1:],
+                                file_name=f,
+                                file_path=root.replace(video_dir, "")[1:])
                 instance.save()
     return HttpResponseRedirect('/')
 

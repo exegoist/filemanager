@@ -27,7 +27,7 @@
 <div class="raw">
     <div class="large-12 panel">
     {% csrf_token %}
-    {{ form.non_field_errors }}{{ form.file_object.label_tag }}{{ form.file_object.help_text }}{{ form.file_object.errors }}{{ form.file_object }}
+    {{ form.non_field_errors }}{{ form.file.label_tag }}{{ form.file.help_text }}{{ form.file.errors }}{{ form.file }}
     <input class="button radius" type="submit" value="Завантажити" />
     </div>
 </div>
@@ -43,7 +43,7 @@
        {% for file in files_list %}
        <tr>
            <td><a href="/{{ file.url }}">{{ file.name }}</a></td>
-           <td>{{ file.size }}</td>
+           <td>{{ file.size|filesizeformat }}</td>
            <td><a href="/{{ file.delete_url }}" class="button alert tiny radius">ВИДАЛИТИ</a></td>
        </tr>
        {% endfor %}
