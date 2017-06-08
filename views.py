@@ -83,8 +83,8 @@ def list_current(request):
 
 def scan_for_files(request):
     "scan directory for files and populate db with founded files"
-    media_dir = '/home/al/.virtualenvs/pydio/pydio/media'
-    video_dir = '/home/al/.virtualenvs/pydio/pydio/media/video'
+    media_dir = '/media'
+    video_dir = '/media/video'
     for root, dirs, files in os.walk(video_dir, topdown=True):
         for f in files:
             if not File.objects.filter(file_name=f):
