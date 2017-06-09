@@ -18,8 +18,8 @@ class File(models.Model):
         ordering = ['-pk']
 
     file = models.FileField(upload_to=generate_path)
-    file_name = models.CharField(max_length=60)
-    file_path = models.CharField(max_length=30)
+    file_name = models.CharField(max_length=255)
+    file_path = models.CharField(max_length=32)
     def __unicode__(self):
         return self.file_name
 
