@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """ view that handle files adding, listing, removing  """
 import os
+import collections
 # import from django
 from django.utils import timezone
 from django.shortcuts import render_to_response, get_object_or_404
@@ -12,18 +13,20 @@ from django.db.models import Q
 from .models import File
 from .forms import FileForm
 
-MONTHS = {'01':'Січень',
-          '02':'Лютий',
-          '03':'Березень',
-          '04':'Квітень',
-          '05':'Травень',
-          '06':'Червень',
-          '07':'Липень',
-          '08':'Серпень',
-          '09':'Вересень',
-          '10':'Жовтень',
-          '11':'Листопад',
-          '12':'Грудень'}
+MONTHS = [('01','Січень'),
+          ('02','Лютий'),
+          ('03','Березень'),
+          ('04','Квітень'),
+          ('05','Травень'),
+          ('06','Червень'),
+          ('07','Липень'),
+          ('08','Серпень'),
+          ('09','Вересень'),
+          ('10','Жовтень'),
+          ('11','Листопад'),
+          ('12','Грудень')]
+
+MONTHS = collections.OrderedDict(MONTHS)
 
 
 def year_urls(year, month):
